@@ -1,16 +1,28 @@
+from flask import Flask, render_template, request, redirect
 from ping3 import ping, verbose_ping
 import ping3
 import sched, time, sys, os
 from tqdm import tqdm
 
 
-#ping3.DEBUG = True
+app = Flask(__name__)
 
-hostname='Google.com'
+@app.route("/")
+def index():
+        hostname='Google.com'
+        delay = ping3.ping(hostname)
+        delayMsLong = delay * 1000
+        delayMs = round(delayMsLong, 2)
+        print(hostname, delayMs, 'ms')
+        return render_template('index.html', hostname=hostname, delayMs=delayMs)
+
+
+
 
 def pingpong():
     while True:
 
+        hostname='google.com'
         delay = ping3.ping(hostname)
         delayMsLong = delay * 1000
         delayMs = round(delayMsLong, 2)
@@ -20,5 +32,6 @@ def pingpong():
             print(f"{countdown}", end="\r", flush=True)
             time.sleep(1)
 
-pingpong()
+if __name__ == '__main__':
+    app.run()
 
